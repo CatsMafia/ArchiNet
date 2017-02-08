@@ -2,7 +2,8 @@
 *.o
 *.a
 *.so
-
+*.sublime-*
+startwork.sh
 # Folders
 _obj
 _test
