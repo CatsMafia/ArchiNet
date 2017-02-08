@@ -36,24 +36,7 @@
   			</div>
   		</div>
   	</header>
-  <div class="container">
-    <div class="write-shyteyky">
-      <form action="/write-shyteyky" method="POST">
-        <textarea rows="2" id= "write-shyteyk" name="text" ></textarea>
-        <button type="submit" value="Submit">ЕЕЕЕ</button>
-      </form>
-      <div class="container">
-        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 main-read shyteyka">
-            <p class="rate-shyt">rate 1970</p>
-            <span class="text-shyt">Hello World</span><br>
-            <span class="date-shyt">01.02.1970</span>
-        </div>
-        <div class="col-lg-offset-1 col-lg-3 col-md-3 col-md-offset-1 hidden-xs hidden-sm">
-          <span>Все</span>
-        </div>
-      </div>  
-    </div>
-  	</div>
+    {{ yield }}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
