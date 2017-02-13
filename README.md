@@ -1,2 +1,3 @@
-# Smeshnyavochki
-Social network Smeshnyavochki
+# ArchiNet
+
+Social network ArchiNet
