@@ -1,37 +1,78 @@
 package main
 
 import (
+	"github.com/CatsMafia/ArchiNet/db/documents"
+	"github.com/CatsMafia/ArchiNet/models"
+	"github.com/CatsMafia/ArchiNet/utils"
+
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 
-	"github.com/CatsMafia/ArchiNet/models"
+	"gopkg.in/mgo.v2"
 
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 )
 
-var posts map[string]*models.Post
+var keksCollection *mgo.Collection
 
 func index(rend render.Render) {
 	rend.HTML(200, "index", "")
 }
 
-func newPost(r *http.Request) {
-	text := r.FormValue("text")
+func new_kek(r *http.Request) {
+	id := utils.GenerateId(false)
 	userId := r.FormValue("userId")
-	post := models.NewPost(text, userId)
-	posts[post.Id] = post
+	text := r.FormValue("text")
+	t := time.Now()
+	kek := documents.KekDocument{id, userId, text, 0, t}
+	keksCollection.Insert(kek)
 }
 
-func getPost(ren render.Render, r *http.Request) {
+func get_kek(ren render.Render, r *http.Request) {
 	id := r.FormValue("id")
-	post, _ := json.Marshal(posts[id])
-	ren.JSON(200, string(post))
+	if id != "" {
+		kekDoc := documents.KekDocument{}
+		err := keksCollection.FindId(id).One(&kekDoc)
+		if err == nil {
+			kek, _ := json.Marshal(kekDoc)
+			ren.JSON(200, string(kek))
+		} else {
+			ren.JSON(400, "haven't keks")
+		}
+	} else {
+		fmt.Println("AAAAAAAa1")
+		keksDoc := []documents.KekDocument{}
+		err := keksCollection.Find(nil).All(&keksDoc)
+		if err != nil {
+			ren.JSON(400, "haven't keks")
+		} else {
+			fmt.Println("AAAAAAAa2")
+			var out string = ""
+			for _, doc := range keksDoc {
+				fmt.Println("AAAAAAAa3")
+				kek := models.Kek{doc.Id, doc.UserId, doc.Text, doc.Rate, doc.Date}
+				kekJson, _ := json.Marshal(kek)
+				out += string(kekJson) + "\n"
+			}
+			ren.JSON(200, out)
+		}
+	}
 }
 
 func main() {
 	m := martini.Classic()
-	posts = make(map[string]*models.Post, 0)
+
+	sesion, err := mgo.Dial("localhost")
+
+	if err != nil {
+		panic(err)
+	}
+
+	keksCollection = sesion.DB("ArchiNet").C("keks")
+
 	m.Get("/", index)
 	m.Use(render.Renderer(render.Options{
 		Directory:  "templates",                // Specify what path to load the templates from.
@@ -41,7 +82,7 @@ func main() {
 		Charset:    "UTF-8", // Sets encoding for json and html content-types. Default is "UTF-8".
 		IndentJSON: true,    // Output human readable JSON
 	}))
-	m.Post("/api/newpost", newPost)
-	m.Get("/api/getpost", getPost)
+	m.Post("/api/newkek", new_kek)
+	m.Get("/api/getkek", get_kek)
 	m.Run()
 }
