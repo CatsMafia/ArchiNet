@@ -11,8 +11,10 @@ import (
 	"gopkg.in/mgo.v2"
 
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,16 +25,37 @@ func index(rend render.Render) {
 }
 
 func new_kek(r *http.Request) {
-	id := utils.GenerateId(false)
 	userId := r.FormValue("userId")
 	text := r.FormValue("text")
 	t := time.Now()
-	kek := documents.KekDocument{id, userId, text, 0, t}
-	keksCollection.Insert(kek)
+	var err error = errors.New("a")
+	for err != nil {
+		id := utils.GenerateId()
+		kek := documents.KekDocument{id, userId, text, 0, t, utils.FindSubStr(text, "#", " "), utils.FindSubStr(text, "@", " ")}
+		err = keksCollection.Insert(kek)
+	}
 }
 
 func get_kek(ren render.Render, r *http.Request) {
 	id := r.FormValue("id")
+	startS := r.FormValue("start")
+	endS := r.FormValue("end")
+	hashtag := r.FormValue("hashtag")
+	linkpeople := r.FormValue("LinkAuthor")
+	if startS == "" {
+		startS = "0"
+	}
+	if endS == "" {
+		endS = "10"
+	}
+	if hashtag != "" {
+		hashtag = hashtag[1:]
+	}
+	if linkpeople != "" {
+		linkpeople = hashtag[1:]
+	}
+	start, _ := strconv.ParseInt(startS, 10, 64)
+	end, _ := strconv.ParseInt(endS, 10, 64)
 	if id != "" {
 		kekDoc := documents.KekDocument{}
 		err := keksCollection.FindId(id).One(&kekDoc)
@@ -43,17 +66,28 @@ func get_kek(ren render.Render, r *http.Request) {
 			ren.JSON(400, "haven't keks")
 		}
 	} else {
-		fmt.Println("AAAAAAAa1")
 		keksDoc := []documents.KekDocument{}
 		err := keksCollection.Find(nil).All(&keksDoc)
 		if err != nil {
 			ren.JSON(400, "haven't keks")
 		} else {
-			fmt.Println("AAAAAAAa2")
 			var out string = ""
-			for _, doc := range keksDoc {
-				fmt.Println("AAAAAAAa3")
-				kek := models.Kek{doc.Id, doc.UserId, doc.Text, doc.Rate, doc.Date}
+			for i, doc := range keksDoc {
+				if int64(i) < start {
+					continue
+				}
+				if int64(i) > end {
+					break
+				}
+
+				hashtags := strings.Split(doc.Hashtags, "#")
+				linkspeople := strings.Split(doc.LinksPeople, "@")
+				flag, flag2 := utils.IsIn(hashtags, hashtag), utils.IsIn(linkspeople, linkpeople)
+				if !flag || !flag2 {
+					end++
+					continue
+				}
+				kek := models.Kek{doc.Id, doc.UserId, doc.Text, doc.Rate, doc.Date, doc.Hashtags, doc.LinksPeople}
 				kekJson, _ := json.Marshal(kek)
 				out += string(kekJson) + "\n"
 			}

@@ -1,16 +1,52 @@
 package utils
 
-import "fmt"
+import (
+	"crypto/rand"
+	"fmt"
+	"strings"
+)
 
-var userCount uint64 = 0
-var postCount uint64 = 0
+var kekCount uint64 = 0
 
-func GenerateId(isUser bool) string {
-	if isUser {
-		userCount++
-		return fmt.Sprintf("%d", userCount)
+func GenerateId() string {
+	b := make([]byte, 16)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)
+}
+func FindSubStr(str string, start, end string) string {
+	if strings.ContainsAny(str, string(start)+" & "+string(end)) {
+		str += " "
+		flag := false
+		var temp int
+		res := ""
+		for i, c := range str {
+			if string(c) == start {
+				if flag {
+					res += str[temp:i]
+					temp = i
+					flag = true
+				} else {
+					temp = i
+					flag = true
+				}
+			} else if string(c) == end {
+				if flag {
+					res += str[temp:i]
+					flag = false
+				}
+			}
+		}
+		return res
 	} else {
-		postCount++
-		return fmt.Sprintf("%d", postCount)
+		return ""
 	}
+}
+
+func IsIn(sl []string, str string) bool {
+	for _, h := range sl {
+		if h == str {
+			return true
+		}
+	}
+	return false
 }
