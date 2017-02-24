@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/md5"
 	"crypto/rand"
 	"fmt"
 	"strings"
@@ -49,4 +50,9 @@ func IsIn(sl []string, str string) bool {
 		}
 	}
 	return false
+}
+
+func GetHash(in string) string {
+	data := []byte(in)
+	return fmt.Sprintf("%x", md5.Sum(data))
 }

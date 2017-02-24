@@ -9,9 +9,11 @@ import (
 	"github.com/martini-contrib/render"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,9 +21,27 @@ import (
 )
 
 var keksCollection *mgo.Collection
+var usersCollection *mgo.Collection
 
-func index(rend render.Render) {
-	rend.HTML(200, "index", "")
+const (
+	COOKIE_NAME = "session"
+)
+
+func index(rend render.Render, r *http.Request) {
+	cookie, _ := r.Cookie(COOKIE_NAME)
+	if cookie == nil {
+		rend.Redirect("/login")
+	} else {
+		id := cookie.Value[:32]
+		pass := cookie.Value[32:]
+		res := documents.UserDocument{}
+		err := usersCollection.FindId(id).One(&res)
+		if err != nil || res.Password != pass {
+			rend.Redirect("/login")
+		} else {
+			rend.HTML(200, "index", "")
+		}
+	}
 }
 
 func new_kek(r *http.Request) {
@@ -96,9 +116,55 @@ func get_kek(ren render.Render, r *http.Request) {
 	}
 }
 
+func get_login_handler(ren render.Render) {
+	ren.HTML(200, "login", nil)
+}
+
+func get_registration_handler(ren render.Render) {
+	ren.HTML(200, "registration", nil)
+}
+
+func post_registration_handler(ren render.Render, r *http.Request) {
+	username := r.FormValue("Username")
+	password := r.FormValue("Password")
+	if username == "" || password == "" {
+		ren.Redirect("/registration")
+	} else {
+		var err error = errors.New("a")
+		pass := utils.GetHash(password)
+		for err != nil {
+			user := documents.UserDocument{utils.GenerateId(), username, pass}
+			err = usersCollection.Insert(user)
+		}
+		ren.Redirect("/login")
+	}
+}
+
+func post_login_handler(ren render.Render, r *http.Request, w http.ResponseWriter) {
+	username := r.FormValue("Username")
+	password := r.FormValue("Password")
+	fmt.Println(username)
+	fmt.Println(password)
+	res := documents.UserDocument{}
+	err := usersCollection.Find(bson.M{"username": username}).One(&res)
+	if err != nil {
+		fmt.Println(err)
+		ren.Redirect("/login")
+	} else {
+		if res.Password != utils.GetHash(password) {
+			ren.Redirect("/login")
+		} else {
+			cookie := &http.Cookie{Name: COOKIE_NAME, Value: res.Id + res.Password}
+			http.SetCookie(w, cookie)
+			ren.Redirect("/")
+		}
+	}
+
+}
+
 func main() {
 	m := martini.Classic()
-
+	fmt.Println("Hello")
 	sesion, err := mgo.Dial("localhost")
 
 	if err != nil {
@@ -106,6 +172,7 @@ func main() {
 	}
 
 	keksCollection = sesion.DB("ArchiNet").C("keks")
+	usersCollection = sesion.DB("ArchiNet").C("users")
 
 	m.Get("/", index)
 	m.Use(render.Renderer(render.Options{
@@ -118,5 +185,10 @@ func main() {
 	}))
 	m.Post("/api/newkek", new_kek)
 	m.Get("/api/getkek", get_kek)
+	m.Get("/login", get_login_handler)
+	m.Post("/login", post_login_handler)
+	m.Get("/registration", get_registration_handler)
+	m.Post("/registration", post_registration_handler)
+
 	m.Run()
 }
