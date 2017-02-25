@@ -116,6 +116,20 @@ func get_kek(ren render.Render, r *http.Request) {
 	}
 }
 
+func post_put_kek_handler(ren render.Render, r *http.Request) {
+	id := r.FormValue("id")
+	deltaKek, _ := strconv.ParseInt(r.FormValue("kek"), 10, 64)
+
+	kekDoc := documents.KekDocument{}
+	err := keksCollection.FindId(id).One(&kekDoc)
+	kekDoc.Rate += deltaKek
+	err = keksCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"Rate": kekDoc.Rate}})
+	if err != nil {
+		fmt.Println(err)
+	}
+	ren.JSON(200, "Rate:"+fmt.Sprintf("%d", kekDoc.Rate))
+}
+
 func get_login_handler(ren render.Render) {
 	ren.HTML(200, "login", nil)
 }
@@ -185,6 +199,7 @@ func main() {
 	}))
 	m.Post("/api/newkek", new_kek)
 	m.Get("/api/getkek", get_kek)
+	m.Post("/api/putkek", post_put_kek_handler)
 	m.Get("/login", get_login_handler)
 	m.Post("/login", post_login_handler)
 	m.Get("/registration", get_registration_handler)
