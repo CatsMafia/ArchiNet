@@ -4,10 +4,16 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
-var kekCount uint64 = 0
+var userCount uint64 = 0
+
+func GenerateUserId() string {
+	userCount++
+	return strconv.FormatUint(userCount, 10)
+}
 
 func GenerateId() string {
 	b := make([]byte, 16)

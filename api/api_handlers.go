@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/CatsMafia/ArchiNet/db/documents"
-	"github.com/CatsMafia/ArchiNet/models"
-	"github.com/CatsMafia/ArchiNet/utils"
+	"github.com/CatsMafia/LolScroll/db/documents"
+	"github.com/CatsMafia/LolScroll/models"
+	"github.com/CatsMafia/LolScroll/utils"
 
 	"github.com/martini-contrib/render"
 
