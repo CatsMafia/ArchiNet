@@ -62,3 +62,13 @@ func GetHash(in string) string {
 	data := []byte(in)
 	return fmt.Sprintf("%x", md5.Sum(data))
 }
+
+func RemoveElemString(list []string, item string) []string {
+	for i, v := range list {
+		if v == item {
+			copy(list[i:], list[i+1:])
+			list = list[:len(list)-1]
+		}
+	}
+	return list
+}

@@ -103,7 +103,7 @@ func post_login_handler(ren render.Render, r *http.Request, w http.ResponseWrite
 
 func main() {
 	m := martini.Classic()
-	fmt.Println("Hello")
+	fmt.Println("Run")
 	sesion, err := mgo.Dial("localhost")
 
 	if err != nil {
@@ -125,7 +125,7 @@ func main() {
 	m.Get("/", index)
 	m.Post("/api/newkek", api.New_kek)
 	m.Get("/api/getkek", api.Get_kek)
-	m.Post("/api/putkek", api.Post_put_kek_handler)
+	m.Post("/api/putlol", api.Post_put_lol_handler)
 	m.Get("/login", get_login_handler)
 	m.Post("/login", post_login_handler)
 	m.Get("/registration", get_registration_handler)

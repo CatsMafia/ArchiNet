@@ -1,12 +1,25 @@
 <form action="/api/newkek" method="post">
 	Text:
-	<input type="text" name=text>
-	AAAAa:
-	<input type="radio" name="userid" value="1"> 
+	<input type="text" name="text">
+	<input type="hidden" name="userId" value="1"> 
 	<button type="submit">Hello WOrld</button>
 </form>
 <br>
 <form action="/api/getkek">
 	<input type="text" name="hashtag">
-	<button type="submit"></button>
+	<input type="submit">
+</form>
+
+<form action="/api/putlol" method="post">
+	<input type="hidden" name="id" value="b684ded98cc0f86f91905f78591e9080">
+	<input type="hidden" name="lol" value="1">
+	<input type="hidden" name="user" value="1">
+	<input type="submit">
+</form>
+
+<form action="/api/putlol" method="post">
+	<input type="hidden" name="id" value="b684ded98cc0f86f91905f78591e9080">
+	<input type="hidden" name="lol" value="-1">
+	<input type="hidden" name="user" value="1">
+	<input type="submit">
 </form>

@@ -72,7 +72,7 @@ func Get_kek(ren render.Render, r *http.Request) {
 					end++
 					continue
 				}
-				kek := models.Kek{doc.Id, doc.UserId, doc.Text, doc.Rate, doc.Date, doc.Hashtags, doc.LinksPeople}
+				kek := models.Kek{doc.Id, doc.UserId, doc.Text, doc.Lols, doc.Date, "", doc.Hashtags, doc.LinksPeople, make([]string, 0)}
 				kekJson, _ := json.Marshal(kek)
 				out += string(kekJson) + "\n"
 			}
@@ -84,25 +84,44 @@ func Get_kek(ren render.Render, r *http.Request) {
 func New_kek(r *http.Request) {
 	userId := r.FormValue("userId")
 	text := r.FormValue("text")
-	t := time.Now()
 	var err error = errors.New("a")
 	for err != nil {
 		id := utils.GenerateId()
-		kek := documents.KekDocument{id, userId, text, 0, t, utils.FindSubStr(text, "#", " "), utils.FindSubStr(text, "@", " ")}
+		t := time.Now()
+		kek := documents.KekDocument{id, userId, text, 0, t, "", utils.FindSubStr(text, "#", " "), utils.FindSubStr(text, "@", " "), make([]string, 0)}
 		err = KeksCollection.Insert(kek)
+		if err != nil {
+			fmt.Println("Error add new kek : ", err)
+		}
+
 	}
 }
 
-func Post_put_kek_handler(ren render.Render, r *http.Request) {
+func Post_put_lol_handler(ren render.Render, r *http.Request) {
 	id := r.FormValue("id")
-	deltaKek, _ := strconv.ParseInt(r.FormValue("kek"), 10, 64)
-
+	deltaLol, _ := strconv.ParseInt(r.FormValue("lol"), 10, 64)
+	user := r.FormValue("user")
 	kekDoc := documents.KekDocument{}
-	err := KeksCollection.FindId(id).One(&kekDoc)
-	kekDoc.Rate += deltaKek
-	err = KeksCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"Rate": kekDoc.Rate}})
+	err := KeksCollection.FindId(string(id)).One(&kekDoc)
 	if err != nil {
+		fmt.Println(id)
 		fmt.Println(err)
 	}
-	ren.JSON(200, "Rate:"+fmt.Sprintf("%d", kekDoc.Rate))
+	if !utils.IsIn(kekDoc.UserLols, user) && deltaLol > 0 {
+		kekDoc.Lols += deltaLol
+		kekDoc.UserLols = append(kekDoc.UserLols, user)
+		err = KeksCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"lols": kekDoc.Lols, "userlols": kekDoc.UserLols}})
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else if utils.IsIn(kekDoc.UserLols, user) && deltaLol < 0 {
+		kekDoc.Lols += deltaLol
+		kekDoc.UserLols = utils.RemoveElemString(kekDoc.UserLols, user)
+		err = KeksCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"lols": kekDoc.Lols, "userlols": kekDoc.UserLols}})
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	ren.JSON(200, "Lols:"+fmt.Sprintf("%d", kekDoc.Lols))
 }
