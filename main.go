@@ -110,7 +110,7 @@ func main() {
 		panic(err)
 	}
 
-	api.KeksCollection = sesion.DB("LolScroll").C("keks")
+	api.LolsCollection = sesion.DB("LolScroll").C("lols")
 	usersCollection = sesion.DB("LolScroll").C("users")
 	sessionColletion = sesion.DB("LolScroll").C("session")
 
@@ -123,9 +123,9 @@ func main() {
 	}))
 
 	m.Get("/", index)
-	m.Post("/api/newkek", api.New_kek)
-	m.Get("/api/getkek", api.Get_kek)
-	m.Post("/api/putlol", api.Post_put_lol_handler)
+	m.Post("/api/newlol", api.New_lol)
+	m.Get("/api/getlols", api.Get_lol)
+	m.Post("/api/putkek", api.Post_put_kek_handler)
 	m.Get("/login", get_login_handler)
 	m.Post("/login", post_login_handler)
 	m.Get("/registration", get_registration_handler)
