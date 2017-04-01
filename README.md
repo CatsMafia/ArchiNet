@@ -56,7 +56,7 @@ Social network LolScroll
   linkpeople: searsh by linkpeaople.  
   Example for search by @Google need send linkpeople="Google"
 ### Put kek(like)
-  /api/putkek
+  /api/putkek  
   For put kek(like) need to send post request with values:   
   id: lols id  
   userid: user, who puts kek  
