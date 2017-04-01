@@ -64,26 +64,26 @@ Social network LolScroll
 
 ### All Examples:
 ```html
-<form action="/api/newkek" method="post">
+<form action="/api/newlol" method="post">
 	Text:
 	<input type="text" name="text">
 	<input type="hidden" name="userId" value="1"> 
 	<button type="submit">Hello WOrld</button>
 </form>
 <br>
-<form action="/api/getkek">
+<form action="/api/getlol">
 	<input type="text" name="hashtag">
 	<input type="submit">
 </form>
 
-<form action="/api/putlol" method="post">
+<form action="/api/putkek" method="post">
 	<input type="hidden" name="id" value="0">
 	<input type="hidden" name="kek" value="1">
 	<input type="hidden" name="user" value="1">
 	<input type="submit">
 </form>
 
-<form action="/api/putlol" method="post">
+<form action="/api/putkek" method="post">
 	<input type="hidden" name="id" value="0">
 	<input type="hidden" name="kek" value="-1">
 	<input type="hidden" name="user" value="1">
