@@ -60,4 +60,33 @@ Social network LolScroll
   For put kek(like) need to send post request with values:   
   id: lols id  
   userid: user, who puts kek  
-  deltaKek: the number by which the number of keks changes  
+  deltaKek: the number by which the number of keks changes
+
+### All Examples:
+```html
+<form action="/api/newkek" method="post">
+	Text:
+	<input type="text" name="text">
+	<input type="hidden" name="userId" value="1"> 
+	<button type="submit">Hello WOrld</button>
+</form>
+<br>
+<form action="/api/getkek">
+	<input type="text" name="hashtag">
+	<input type="submit">
+</form>
+
+<form action="/api/putlol" method="post">
+	<input type="hidden" name="id" value="b684ded98cc0f86f91905f78591e9080">
+	<input type="hidden" name="lol" value="1">
+	<input type="hidden" name="user" value="1">
+	<input type="submit">
+</form>
+
+<form action="/api/putlol" method="post">
+	<input type="hidden" name="id" value="b684ded98cc0f86f91905f78591e9080">
+	<input type="hidden" name="lol" value="-1">
+	<input type="hidden" name="user" value="1">
+	<input type="submit">
+</form>
+```
