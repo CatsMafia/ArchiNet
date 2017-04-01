@@ -2,13 +2,13 @@ package utils
 
 import (
 	"crypto/md5"
-	"crypto/rand"
 	"fmt"
 	"strconv"
 	"strings"
 )
 
 var userCount uint64 = 0
+var lolsCount uint64 = 0
 
 func GenerateUserId() string {
 	userCount++
@@ -16,9 +16,8 @@ func GenerateUserId() string {
 }
 
 func GenerateId() string {
-	b := make([]byte, 16)
-	rand.Read(b)
-	return fmt.Sprintf("%x", b)
+	lolsCount++
+	return fmt.Sprintf("%d", lolsCount)
 }
 func FindSubStr(str string, start, end string) string {
 	if strings.ContainsAny(str, string(start)+" & "+string(end)) {

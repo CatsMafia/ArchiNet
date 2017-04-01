@@ -24,14 +24,14 @@ var LolsCollection *mgo.Collection
 func Get_lol(ren render.Render, r *http.Request) {
 	id := r.FormValue("id")
 	startS := r.FormValue("start")
-	endS := r.FormValue("end")
+	countS := r.FormValue("count")
 	hashtag := r.FormValue("hashtag")
 	linkpeople := r.FormValue("linkauthor")
 	if startS == "" {
 		startS = "0"
 	}
-	if endS == "" {
-		endS = "10"
+	if countS == "" {
+		countS = "10"
 	}
 	if hashtag != "" {
 		hashtag = hashtag[1:]
@@ -40,7 +40,8 @@ func Get_lol(ren render.Render, r *http.Request) {
 		linkpeople = linkpeople[1:]
 	}
 	start, _ := strconv.ParseInt(startS, 10, 64)
-	end, _ := strconv.ParseInt(endS, 10, 64)
+	count, _ := strconv.ParseInt(countS, 10, 64)
+	end := start + count
 	if id != "" {
 		lolDoc := documents.LolDocument{}
 		err := LolsCollection.FindId(id).One(&lolDoc)
