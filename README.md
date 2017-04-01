@@ -39,7 +39,7 @@ Social network LolScroll
 </form>
 ```
 ## API :
-  All api avaible on URL started /api/
+  All api are available on URL begin with /api/
 ### Add new lol:
   /api/newlol  
   For add new lol need send POST request with values:   
@@ -48,7 +48,7 @@ Social network LolScroll
 ### Get lols:  
   /api/getlols  
   For get lol need send Get request with values:  
-  id: Lol id (need for search one lol). Optionaly.  
+  id: Lol id (need for search for one lol). Optionaly.  
   start: Starting id, from which the countdown. begins(). Optionaly, default 0.  
   count: num of lols.Optionaly, default 10.    
   hashtag: search by hashtag.  
@@ -57,36 +57,7 @@ Social network LolScroll
   Example for search by @Google need send linkpeople="Google"
 ### Put kek(like)
   /api/putkek
-  For put kek(like) need to send post request with values:
+  For put kek(like) need to send post request with values:   
   id: lols id  
   userid: user, who puts kek  
-  kek: the number by which the number of keks changes  
-
-### All Examples:
-```html
-<form action="/api/newlol" method="post">
-	Text:
-	<input type="text" name="text">
-	<input type="hidden" name="userId" value="1"> 
-	<button type="submit">Hello WOrld</button>
-</form>
-<br>
-<form action="/api/getlol">
-	<input type="text" name="hashtag">
-	<input type="submit">
-</form>
-
-<form action="/api/putkek" method="post">
-	<input type="hidden" name="id" value="0">
-	<input type="hidden" name="kek" value="1">
-	<input type="hidden" name="user" value="1">
-	<input type="submit">
-</form>
-
-<form action="/api/putkek" method="post">
-	<input type="hidden" name="id" value="0">
-	<input type="hidden" name="kek" value="-1">
-	<input type="hidden" name="user" value="1">
-	<input type="submit">
-</form>
-```
+  deltaKek: the number by which the number of keks changes  
