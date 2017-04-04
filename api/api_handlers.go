@@ -97,6 +97,11 @@ func New_lol(r *http.Request) {
 func Post_put_kek_handler(ren render.Render, r *http.Request) {
 	id := r.FormValue("id")
 	deltaKek, _ := strconv.ParseInt(r.FormValue("kek"), 10, 64)
+	if deltaKek > 0 {
+		deltaKek = 1
+	} else if deltaKek < 0 {
+		deltaKek = -1
+	}
 	user := r.FormValue("user")
 	lolDoc := documents.LolDocument{}
 	err := LolsCollection.FindId(string(id)).One(&lolDoc)
