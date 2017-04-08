@@ -107,6 +107,7 @@ func main() {
 	sesion, err := mgo.Dial("localhost")
 
 	if err != nil {
+		fmt.Println("Please install MongoDB")
 		panic(err)
 	}
 
